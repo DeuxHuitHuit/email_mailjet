@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension id="email_mailjet" status="released" xmlns="http://getsymphony.com/schemas/extension/1.0">
+	<name>Email Mailjet</name>
+	<description>Use Mailjet to send email</description>
+	<repo type="github">https://github.com/DeuxHuitHuit/email_mailjet</repo>
+	<types>
+		<type>Third Party Integration</type>
+		<type>Email</type>
+	</types>
+	<authors>
+		<author>
+			<name github="DeuxHuitHuit" symphony="nitriques" twitter="DeuxHuitHuit">Deux Huit Huit</name>
+			<website>https://deuxhuithuit.com</website>
+		</author>
+	</authors>
+	<releases>
+		<release version="1.0.0" date="2018-01-10" min="2.6.x" max="2.x.x">
+			- Initial version
+		</release>
+	</releases>
+</extension>
