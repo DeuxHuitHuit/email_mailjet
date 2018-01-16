@@ -64,29 +64,29 @@ class MailjetGateway extends EmailGateway
     {
         $group = new XMLElement('fieldset');
         $group->setAttribute('class', 'settings condensed pickable');
-        $group->setAttribute('id', 'sendgrid');
+        $group->setAttribute('id', 'email_mailjet');
 
         $div = new XMLElement('div');
         $div->setAttribute('class', 'columns two');
 
         $label = Widget::Label(__('From Name'));
         $label->setAttribute('class', 'column');
-        $label->appendChild(Widget::Input('settings[email_mailjet][from_name]', Symphony::Configuration()->get('from_name', self::SETTINGS_GROUP)));
+        $label->appendChild(Widget::Input('settings[email_mailjet][from_name]', General::sanitize(Symphony::Configuration()->get('from_name', self::SETTINGS_GROUP))));
         $div->appendChild($label);
 
         $label = Widget::Label(__('From Address'));
         $label->setAttribute('class', 'column');
-        $label->appendChild(Widget::Input('settings[email_mailjet][from_address]', Symphony::Configuration()->get('from_address', self::SETTINGS_GROUP)));
+        $label->appendChild(Widget::Input('settings[email_mailjet][from_address]', General::sanitize(Symphony::Configuration()->get('from_address', self::SETTINGS_GROUP))));
         $div->appendChild($label);
 
         $label = Widget::Label(__('Public API Key'));
         $label->setAttribute('class', 'column');
-        $label->appendChild(Widget::Input('settings[email_mailjet][api_key_pub]', Symphony::Configuration()->get('api_key_pub', self::SETTINGS_GROUP)));
+        $label->appendChild(Widget::Input('settings[email_mailjet][api_key_pub]', General::sanitize(Symphony::Configuration()->get('api_key_pub', self::SETTINGS_GROUP))));
         $div->appendChild($label);
 
         $label = Widget::Label(__('Private API Key'));
         $label->setAttribute('class', 'column');
-        $label->appendChild(Widget::Input('settings[email_mailjet][api_key_pri]', Symphony::Configuration()->get('api_key_pri', self::SETTINGS_GROUP)));
+        $label->appendChild(Widget::Input('settings[email_mailjet][api_key_pri]', General::sanitize(Symphony::Configuration()->get('api_key_pri', self::SETTINGS_GROUP))));
         $div->appendChild($label);
 
         $group->appendChild($div);
