@@ -14,6 +14,9 @@
 		</author>
 	</authors>
 	<releases>
+		<release version="1.0.1" date="2018-01-16" min="2.6.x" max="2.x.x">
+			- Sanitize configuration values before output
+		</release>
 		<release version="1.0.0" date="2018-01-10" min="2.6.x" max="2.x.x">
 			- Initial version
 		</release>
