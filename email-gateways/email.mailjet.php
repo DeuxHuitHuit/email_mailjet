@@ -15,12 +15,15 @@ class MailjetGateway extends EmailGateway
 
     public function send()
     {
-        if (empty($this->_sender_email_address)) {
+        $from_email = $this->_sender_email_address;
+        $from_name = $this->_sender_name;
+
+        if (empty($from_email)) {
             $from_email = Symphony::Configuration()->get('from_address', self::SETTINGS_GROUP);
             $this->setSenderEmailAddress($from_email);
         }
         
-        if (empty($this->_sender_name)) {
+        if (empty($from_name)) {
             $from_name = Symphony::Configuration()->get('from_name', self::SETTINGS_GROUP);
             $this->setSenderName($from_name);
         }
