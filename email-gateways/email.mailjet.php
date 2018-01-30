@@ -15,46 +15,42 @@ class MailjetGateway extends EmailGateway
 
     public function send()
     {
-        $from_email = $this->_sender_email_address;
-        $from_name = $this->_sender_name;
 
-        if (empty($from_email)) {
-            $from_email = Symphony::Configuration()->get('from_address', self::SETTINGS_GROUP);
-            $this->setSenderEmailAddress($from_email);
+        if (empty($this->_sender_email_address)) {
+            $this->setSenderEmailAddress(Symphony::Configuration()->get('from_address', self::SETTINGS_GROUP));
         }
         
-        if (empty($from_name)) {
-            $from_name = Symphony::Configuration()->get('from_name', self::SETTINGS_GROUP);
-            $this->setSenderName($from_name);
+        if (empty($this->_sender_name)) {
+            $this->setSenderName(Symphony::Configuration()->get('from_name', self::SETTINGS_GROUP));
         }
-        
+
         $this->validate();
         
         $apiKeyPub = Symphony::Configuration()->get('api_key_pub', self::SETTINGS_GROUP);
         $apiKeyPri = Symphony::Configuration()->get('api_key_pri', self::SETTINGS_GROUP);
         $mj = new \Mailjet\Client($apiKeyPub,  $apiKeyPri, true, ['version' => 'v3.1']);
         $body = ['Messages' => []];
-        
+
         // Send individual emails
         foreach ($this->_recipients as $name => $address) {
-            $body['Messages'][] =[
+            $body['Messages'][] = [
                 'From' => [
-                    'Email' => $from_email,
-                    'Name' => $from_name
+                    'Email' => $this->_sender_email_address,
+                    'Name' => $this->_sender_name
                 ],
                 'To' => [[
                     'Email' => $address,
                     'Name' => is_numeric($name) ? $address : $name,
                 ]],
                 'Subject' => $this->_subject,
-                'TextPart' => $this->_text_plain,
-                'HTMLPart' => $this->_text_html,
+                'TextPart' => empty($this->_text_plain) ? strip_tags($html) : $this->_text_plain,
+                'HTMLPart' => empty($this->_text_html) ? '' : $this->_text_plain,
             ];
         }
         
         // Send them
         $response = $mj->post(\Mailjet\Resources::$Email, ['body' => $body]);
-        
+
         return $response->success();
     }
 
