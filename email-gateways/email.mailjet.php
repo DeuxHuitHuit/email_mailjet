@@ -44,7 +44,7 @@ class MailjetGateway extends EmailGateway
                 ]],
                 'Subject' => $this->_subject,
                 'TextPart' => empty($this->_text_plain) ? strip_tags($this->_text_html) : $this->_text_plain,
-                'HTMLPart' => empty($this->_text_html) ? '' : $this->_text_plain,
+                'HTMLPart' => empty($this->_text_html) ? '' : $this->_text_html,
             ];
         }
         
