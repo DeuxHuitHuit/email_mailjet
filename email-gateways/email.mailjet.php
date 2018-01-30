@@ -43,7 +43,7 @@ class MailjetGateway extends EmailGateway
                     'Name' => is_numeric($name) ? $address : $name,
                 ]],
                 'Subject' => $this->_subject,
-                'TextPart' => empty($this->_text_plain) ? strip_tags($html) : $this->_text_plain,
+                'TextPart' => empty($this->_text_plain) ? strip_tags($this->_text_html) : $this->_text_plain,
                 'HTMLPart' => empty($this->_text_html) ? '' : $this->_text_plain,
             ];
         }
