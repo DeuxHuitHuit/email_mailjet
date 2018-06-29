@@ -13,6 +13,32 @@ class MailjetGateway extends EmailGateway
         );
     }
 
+    protected function getSectionAttachments() {
+        $result = array();
+
+        if (empty($this->_attachments)) {
+            return null;
+        }
+
+        foreach ($this->_attachments as $key => $file) {
+            if (filter_var($file['file'], FILTER_VALIDATE_URL)) {
+                //TODO : out of scope for national
+            } else {
+                $file_content = @file_get_contents($file['file']);
+            }
+
+            if ($file_content !== false && !empty($file_content)) {
+                $fileResult = array();
+                $fileResult['ContentType'] = 'application/pdf';
+                $fileResult['Filename'] = $file['filename'];
+                $fileResult['Base64Content'] = EmailHelper::base64ContentTransferEncode($file_content);
+                $result[] = $fileResult;
+            }
+        }
+
+        return $result;
+    }
+
     public function send()
     {
 
@@ -23,7 +49,7 @@ class MailjetGateway extends EmailGateway
         if (empty($this->_sender_name)) {
             $this->setSenderName(Symphony::Configuration()->get('from_name', self::SETTINGS_GROUP));
         }
-
+        
         $this->validate();
         
         $apiKeyPub = Symphony::Configuration()->get('api_key_pub', self::SETTINGS_GROUP);
@@ -31,9 +57,11 @@ class MailjetGateway extends EmailGateway
         $mj = new \Mailjet\Client($apiKeyPub,  $apiKeyPri, true, ['version' => 'v3.1']);
         $body = ['Messages' => []];
 
+        $attachments = $this->getSectionAttachments();
+
         // Send individual emails
         foreach ($this->_recipients as $name => $address) {
-            $body['Messages'][] = [
+            $newMessage = array(
                 'From' => [
                     'Email' => $this->_sender_email_address,
                     'Name' => $this->_sender_name
@@ -43,15 +71,21 @@ class MailjetGateway extends EmailGateway
                     'Name' => is_numeric($name) ? $address : $name,
                 ]],
                 'Subject' => $this->_subject,
-                'TextPart' => empty($this->_text_plain) ? strip_tags($this->_text_html) : $this->_text_plain,
-                'HTMLPart' => empty($this->_text_html) ? '' : $this->_text_html,
-            ];
+                'TextPart' => empty($this->_text_plain) ? strip_tags($html) : $this->_text_plain,
+                'HTMLPart' => empty($this->_text_html) ? '' : $this->_text_plain,
+            );
+
+            if (!empty($attachments)) {
+                $newMessage['Attachments'] = $attachments;
+            }
+
+            $body['Messages'][] = $newMessage;
         }
-        
+
         // Send them
         $response = $mj->post(\Mailjet\Resources::$Email, ['body' => $body]);
-
-        return $response->success();
+        
+        return $result = $response->success();
     }
 
     /**
